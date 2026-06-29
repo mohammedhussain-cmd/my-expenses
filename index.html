@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد المصاريف العراقي</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --primary: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #6366f1, #4f46e5);
+            --expense-color: #f43f5e;
+            --income-color: #10b981;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: var(--text-dark);
+        }
+
+        /* حاوية الموبايل العصري */
+        .phone-shell {
+            width: 100%;
+            max-width: 415px;
+            background: var(--panel-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 4px solid white;
+            animation: fadeInApp 0.6s ease-out;
+            display: flex;
+            flex-direction: column;
+            height: 840px;
+        }
+
+        @keyframes fadeInApp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الرأس - كارت الميزانية الكلية للشهر */
+        .main-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+        }
+
+        .month-title {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .total-monthly-spend {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: scaleUp 0.4s ease-in-out;
+        }
+
+        .today-summary {
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+        }
+
+        .today-summary span {
+            font-weight: bold;
+            color: #ffe4e6;
+        }
+
+        /* جسم التطبيق القابل للتمرير */
+        .scrollable-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* كارت إضافة مصروف جديد */
+        .input-card {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 22px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .add-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: transform 0.2s, cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .add-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* قائمة مصاريف اليوم الحالي */
+        .live-list {
+            margin-bottom: 25px;
+        }
+
+        .item-row {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            border-right: 4px solid var(--expense-color);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .item-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .item-cost {
+            color: var(--expense-color);
+            font-weight: 700;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover { color: var(--expense-color); }
+
+        /* سجل الأيام السابقة */
+        .day-history-row {
+            background: #edf2f7;
+            padding: 14px 18px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-right: 4px solid #718096;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .day-history-title {
+            color: var(--text-dark);
+        }
+
+        .day-history-total {
+            color: #2d3748;
+            font-weight: bold;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .empty-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            padding: 15px;
+        }
+
+        /* حركة لتحديث الأرقام */
+        @keyframes scaleUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-shell">
+        <div class="main-header">
+            <div class="month-title" id="monthLabel">شهر جديد</div>
+            <div class="total-monthly-spend" id="monthlyTotalDisplay">0 د.ع</div>
+            <div class="today-summary">صرفية اليوم الحالي: <span id="todayTotalDisplay">0 د.ع</span></div>
+        </div>
+
+        <div class="scrollable-body">
+            <div class="input-card">
+                <div class="input-group">
+                    <input type="text" id="itemName" placeholder="شنو اشتريت؟ (مثلاً: غداء، كارت)">
+                    <input type="text" id="itemPrice" placeholder="السعر (يستقبل ١٢٣ أو 123)">
+                </div>
+                <button class="add-btn" style="width: 100%;" onclick="addNewExpense()">إضافة المصروف</button>
+            </div>
+
+            <h3>تفاصيل صرفيات اليوم</h3>
+            <div class="live-list" id="todayLiveList">
+                </div>
+
+            <h3>سجل صرفيات الأيام السابقة</h3>
+            <div id="daysHistoryList">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // داتا التطبيق الرئيسية المقسمة لشهور وأيام
+        let appData = JSON.parse(localStorage.getItem('iraq_expense_data')) || {
+            currentMonth: "",
+            historyDays: [], // الأيام السابقة المقفلة [{dateStr: "", dayName: "", totalSpend: 0}]
+            todayExpenses: [] // المصاريف التفصيلية لليوم الحالي [{id: 0, name: "", price: 0, dateStr: ""}]
+        };
+
+        // دالة تحويل الأرقام العربية والشرقية إلى أرقام إنجليزية ليفهمها المتصفح حسابياً
+        function convertArabicNumbers(str) {
+            const arabicNorm = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+            const persianNorm = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+            let result = str;
+            for (let i = 0; i < 10; i++) {
+                result = result.replace(new RegExp(arabicNorm[i], 'g'), i)
+                               .replace(new RegExp(persianNorm[i], 'g'), i);
+            }
+            return result;
+        }
+
+        // دالة الحصول على كود اليوم بصيغة نصية مقارنة YYYY-MM-DD
+        function getDateString(dateObj) {
+            return dateObj.toISOString().split('T')[0];
+        }
+
+        // دالة الحصول على اسم الشهر والسنة الحالي (مثال: حزيران 2026)
+        function getMonthYearString(dateObj) {
+            return dateObj.toLocaleDateString('ar-IQ', { month: 'long', year: 'numeric' });
+        }
+
+        // دالة الحصول على اسم اليوم مع تاريخ اليوم المقروء (مثال: الاثنين 29 حزيران)
+        function getDayNameString(dateObj) {
+            return dateObj.toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'short' });
+        }
+
+        // دالة فحص وتحديث التواريخ (تصفير اليوم بعد الـ 12 ليلاً، وتصفير الشهر عند انتهائه)
+        function checkDateCycles() {
+            const now = new Date();
+            const todayStr = getDateString(now);
+            const currentMonthStr = getMonthYearString(now);
+
+            // 1. فحص تبديل الشهر
+            if (appData.currentMonth !== currentMonthStr) {
+                // إذا كان هناك شهر قديم، يتم أرشفته أو تصفيره لبدء شهر جديد كلياً
+                appData.currentMonth = currentMonthStr;
+                appData.historyDays = [];
+                appData.todayExpenses = [];
+            }
+
+            // 2. فحص تبديل اليوم (إذا عبرت الساعة 12 ليلاً وصار يوم جديد)
+            if (appData.todayExpenses.length > 0 && appData.todayExpenses[0].dateStr !== todayStr) {
+                // حساب مجموع اليوم المنتهي
+                let totalDaySpend = appData.todayExpenses.reduce((sum, item) => sum + item.price, 0);
+                let oldDateObj = new Date(appData.todayExpenses[0].dateStr);
+                
+                // نقله إلى سجل الأيام المنتهية
+                appData.historyDays.push({
+                    dateStr: appData.todayExpenses[0].dateStr,
+                    dayName: getDayNameString(oldDateObj),
+                    totalSpend: totalDaySpend
+                });
+
+                // تصفير قائمة تفاصيل اليوم الحالي لاستقبال الصرف الجديد
+                appData.todayExpenses = [];
+            }
+
+            saveToStorage();
+        }
+
+        // إضافة مصروف جديد لليوم الحالي
+        function addNewExpense() {
+            checkDateCycles(); // التأكد من دقة اليوم أولاً
+
+            const nameInput = document.getElementById('itemName');
+            const priceInput = document.getElementById('itemPrice');
+
+            let cleanPriceStr = convertArabicNumbers(priceInput.value.trim());
+            let priceNum = parseFloat(cleanPriceStr);
+
+            if (nameInput.value.trim() === "" || isNaN(priceNum) || priceNum <= 0) {
+                alert("الرجاء إدخال اسم المصروف والمبلغ بشكل صحيح!");
+                return;
+            }
+
+            const now = new Date();
+            const newExpense = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                price: priceNum,
+                dateStr: getDateString(now)
+            };
+
+            appData.todayExpenses.push(newExpense);
+            saveToStorage();
+            updateUI();
+
+            // مسح الحقول
+            nameInput.value = "";
+            priceInput.value = "";
+            nameInput.focus();
+        }
+
+        // حذف عنصر من قائمة اليوم
+        function deleteExpense(id) {
+            appData.todayExpenses = appData.todayExpenses.filter(item => item.id !== id);
+            saveToStorage();
+            updateUI();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('iraq_expense_data', JSON.stringify(appData));
+        }
+
+        // تحديث الرسوم والواجهات بالكامل
+        function updateUI() {
+            checkDateCycles();
+
+            document.getElementById('monthLabel').innerText = `إجمالي مصاريف (${appData.currentMonth})`;
+
+            // 1. حساب وعرض المصاريف اليومية والشهرية الكلية
+            let todayTotal = appData.todayExpenses.reduce((sum, item) => sum + item.price, 0);
+            let historyTotal = appData.historyDays.reduce((sum, day) => sum + day.totalSpend, 0);
+            let monthlyTotal = todayTotal + historyTotal;
+
+            // تفعيل حركة الأرقام عند التغير
+            const monthlyDisplay = document.getElementById('monthlyTotalDisplay');
+            monthlyDisplay.innerText = `${monthlyTotal.toLocaleString()} د.ع`;
+            monthlyDisplay.style.animation = 'none';
+            setTimeout(() => monthlyDisplay.style.animation = 'scaleUp 0.3s ease', 10);
+
+            document.getElementById('todayTotalDisplay').innerText = `${todayTotal.toLocaleString()} د.ع`;
+
+            // 2. طباعة قائمة اليوم الحالي التفصيلية
+            const todayListEl = document.getElementById('todayLiveList');
+            todayListEl.innerHTML = "";
+            if (appData.todayExpenses.length === 0) {
+                todayListEl.innerHTML = `<div class="empty-text">لا توجد مصاريف لليوم حتى الآن. 🪙</div>`;
+            } else {
+                appData.todayExpenses.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'item-row';
+                    row.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <button class="delete-btn" onclick="deleteExpense(${item.id})">🗑️</button>
+                            <span class="item-text">${item.name}</span>
+                        </div>
+                        <span class="item-cost">${item.price.toLocaleString()} د.ع</span>
+                    `;
+                    todayListEl.appendChild(row);
+                });
+            }
+
+            // 3. طباعة سجل الأيام السابقة (اسم اليوم الكلي مقابل المجموع الكلي فقط)
+            const historyListEl = document.getElementById('daysHistoryList');
+            historyListEl.innerHTML = "";
+            if (appData.historyDays.length === 0) {
+                historyListEl.innerHTML = `<div class="empty-text">أرشيف الأيام السابقة فارغ حالياً.</div>`;
+            } else {
+                // عرض السجل بحيث يظهر أحدث يوم انتهى في الأعلى
+                [...appData.historyDays].reverse().forEach(day => {
+                    const row = document.createElement('div');
+                    row.className = 'day-history-row';
+                    row.innerHTML = `
+                        <span class="day-history-title">🗓️ ${day.dayName}</span>
+                        <span class="day-history-total">الصرف الكلي: ${day.totalSpend.toLocaleString()} د.ع</span>
+                    `;
+                    historyListEl.appendChild(row);
+                });
+            }
+        }
+
+        // فحص مستمر كل 30 ثانية لتحديث اليوم تلقائياً بمنتصف الليل بدون الحاجة لعمل ريفريش
+        setInterval(updateUI, 30000);
+
+        // تشغيل واجهة التطبيق فوراً
+        updateUI();
+    </script>
+</body>
+</html>
