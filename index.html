@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مساعد المصاريف العراقي</title>
     
-    <!-- الأيقونة العصرية الجديدة عند إضافة التطبيق للشاشة الرئيسية -->
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/11502/11502542.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11502/11502542.png">
+    <!-- الأيقونة الفاتحة والعصرية الجديدة للشاشة الرئيسية -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
 
     <style>
         :root {
@@ -19,7 +19,7 @@
             --income-color: #10b981;
             --text-dark: #1e293b;
             --text-light: #64748b;
-            --shadow: 0 10px 30px rgba(66, 255, 132, 0.08);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             --radius: 28px;
         }
 
@@ -75,7 +75,7 @@
             height: 70px;
             margin: 0 auto 10px auto;
             display: block;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
             animation: bounce 3s ease-in-out infinite;
         }
 
@@ -179,17 +179,20 @@
             margin-bottom: 25px;
         }
 
+        /* تعديل التصميم ليكون عمودياً (سطر تحت سطر) */
         .item-row {
             background: white;
-            padding: 11px 14px;
+            padding: 12px 14px;
             border-radius: 12px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
             margin-bottom: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.01);
             border-right: 4px solid var(--expense-color);
             animation: slideIn 0.3s ease-out;
+            position: relative;
         }
 
         @keyframes slideIn {
@@ -199,13 +202,15 @@
 
         .item-text {
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            color: var(--text-dark);
         }
 
         .item-cost {
             color: var(--expense-color);
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            padding-right: 28px; /* محاذاة السعر ليكون تحت النص مباشرة بعد زر الحذف */
         }
 
         .delete-btn {
@@ -213,7 +218,8 @@
             border: none;
             color: #cbd5e1;
             cursor: pointer;
-            margin-right: 8px;
+            margin-right: 0px;
+            margin-left: 8px;
             font-size: 0.95rem;
             transition: color 0.2s;
         }
@@ -265,8 +271,8 @@
 
     <div class="phone-shell">
         <div class="main-header">
-            <!-- الأيقونة الحديثة المخصصة للمصاريف والبطاقات الذكية والنمو المالي -->
-            <img src="https://cdn-icons-png.flaticon.com/512/11502/11502542.png" alt="Modern Expenses Icon" class="app-icon">
+            <!-- الأيقونة المودرن الفاتحة والمبهجة الجديدة داخل التطبيق -->
+            <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" alt="Vibrant Money Icon" class="app-icon">
             
             <div class="month-title" id="monthLabel">إجمالي مصاريف الشهر</div>
             <div class="total-monthly-spend" id="monthlyTotalDisplay">0 د.ع</div>
@@ -357,7 +363,7 @@
             let priceNum = parseFloat(cleanPriceStr);
 
             if (nameInput.value.trim() === "" || isNaN(priceNum) || priceNum <= 0) {
-                alert("الرجاء إدخل اسم المصروف والمبلغ بشكل صحيح!");
+                alert("الرجاء إدخال اسم المصروف والمبلغ بشكل صحيح!");
                 return;
             }
 
@@ -413,7 +419,7 @@
                     const row = document.createElement('div');
                     row.className = 'item-row';
                     row.innerHTML = `
-                        <div style="display: flex; align-items: center;">
+                        <div style="display: flex; align-items: center; width: 100%;">
                             <button class="delete-btn" onclick="deleteExpense(${item.id})">🗑️</button>
                             <span class="item-text">${item.name}</span>
                         </div>
